@@ -6,7 +6,7 @@ gr(fmt = :png);
 using Distributions
 
 
-function G_dynamicinvestormass(j::Number, mminus::Array, N::Number, p::Number, a_c_y::Number, a_c_Id::Number, c2_c::Number, y_ss::Number, pi_ss::Number, Idss::Number, D_ss::Number, c1tild_d::Number, shat::Number, g1_c_y::Number, g1_c_pi::Number, g1_c_Id::Number, g1_c_D::Number, psi_c::Number, psi_d::Number, lambda::Number, sigma::Number, sigmaeta::Number, sigmas::Number, sigmaepsilon::Number, mu::Number, zh::Number, zl::Number, zbar, delta, Dtminus1)
+function G_dynamicinvestormass(j::Number, mminus::Array, N::Number, p::Number, a_c_y::Number, a_c_Id::Number, c2_c::Number, y_ss::Number, pi_ss::Number, Idss::Number, D_ss::Number, c1tild_d::Number, shat::Number, g1_c_y::Number, g1_c_pi::Number, g1_c_Id::Number, g1_c_D::Number, psi_c::Number, psi_d::Number, lambda::Number, sigma::Number, sigmaeta::Number, sigmas::Number, sigmaepsilon::Number, mu::Number, zh::Number, zl::Number, zbar, delta, gamma, Dtminus1)
 
 
 
@@ -304,7 +304,7 @@ function  equation(s::Number)
       m = (a_c_y*cons -psi_d*a_c_Id*cons)/psi_c
       g1_cxminus1 = g1_c_y*cons*y_ss + g1_c_pi*cons*pi_ss + g1_c_Id*cons*Idss + g1_c_D*cons*D_ss
 
-     c = (c1tild_d*(t) + c2_c*g1_cxminus1 + c2_c*(m) + (1-delta)*Dtminus1 - zl)/(zh - zl)
+     c = (c1tild_d*(t) + c2_c*g1_cxminus1 + c2_c*(m) + (1-delta)*gamma*Dtminus1 - zl)/(zh - zl)
 
 
       #c = (c1tild*(t) + c2*gc_css + atild*(m) - r)/(zh - zl)
