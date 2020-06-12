@@ -1,12 +1,13 @@
 using InstantiateFromURL
 github_project("QuantEcon/quantecon-notebooks-julia", version = "0.4.0")
+#github_project("QuantEcon/quantecon-notebooks-julia", version = "0.4.0")
 using LinearAlgebra, Statistics
 using DataFrames, Parameters, Plots, Printf, QuantEcon, Random
 gr(fmt = :png);
 using Distributions
 
 
-function G_dynamicinvestormass(j::Number, mminus::Array, N::Number, p::Number, a_c_y::Number, a_c_Id::Number, c2_c::Number, y_ss::Number, pi_ss::Number, Idss::Number, D_ss::Number, c1tild_d::Number, shat::Number, g1_c_y::Number, g1_c_pi::Number, g1_c_Id::Number, g1_c_D::Number, psi_c::Number, psi_d::Number, lambda::Number, sigma::Number, sigmaeta::Number, sigmas::Number, sigmaepsilon::Number, mu::Number, zh::Number, zl::Number, zbar, delta, gamma, Dtminus1)
+function G_dynamicinvestormass(j::Number, mminus::Array, N::Number, p::Number, a_c_y::Number, a_c_Id::Number, a_c_pd::Number, c2_c::Number, g1_pdxtminus1, g1_cxtminus1, g1_Idxtminus1, c1_Id::Number, shat::Number, psi_c::Number, psi_d::Number, lambda::Number, sigma::Number, sigmaeta::Number, sigmas::Number, sigmaepsilon::Number, mu::Number, zh::Number, zl::Number, zbar, delta, gamma, Dtminus1)
 
 
 
@@ -72,8 +73,7 @@ function  equation(s::Number)
 
 
     function dtild(zk::Number, s::Number, etatild::Number)
-    mu = 0.1
-    d = (1-mu)*cdf(x, (s - (zk+etatild))/(sigmas))
+    d = (1)*cdf(x, (s - (zk+etatild))/(sigmas))
     return d
     end
 
@@ -139,9 +139,8 @@ function  equation(s::Number)
 
 
     function func(zk::Number, eta::Number, etatild::Number, dk::Number, epsilon::Number, s::Number)
-    mu = 0.1
     q = Normal(0, sigmaepsilon)
-    s = funcetapdfupdated(eta)*pdf(q, (1/mu)*(dtild(dk, s, etatild) + mu*epsilon - cdf(x, (s - (zk+eta))/(sigmas))*(1-mu)))
+    s = funcetapdfupdated(eta)*pdf(q, (1/mu)*(dtild(dk, s, etatild) + 1*epsilon - cdf(x, (s - (zk+eta))/(sigmas))*(1)))
     return s
     end
 
@@ -298,14 +297,24 @@ function  equation(s::Number)
 
 
 
-      t = psi(p,shat)*simpsoncdf(shat, zh) + (1-psi(p,shat))*simpsoncdf(shat, zl)
+      #t = psi(p,shat)*simpsoncdf(shat, zh) + (1-psi(p,shat))*simpsoncdf(shat, zl)
       ztild = Gamma(p,shat)*zh + (1-Gamma(p,shat))*zl
       cons = (-psi_c/sigma)*(lambda*ztild + (1-lambda)*zbar)
-      m = (a_c_y*cons -psi_d*a_c_Id*cons)/psi_c
-      g1_cxminus1 = g1_c_y*cons*y_ss + g1_c_pi*cons*pi_ss + g1_c_Id*cons*Idss + g1_c_D*cons*D_ss
+      m_c = (a_c_y*cons -psi_d*a_c_Id*cons)/psi_c
+      m_Id = a_c_Id*cons
+      m_pd = a_c_pd*cons
+      #Correct below
 
-     c = (c1tild_d*(t) + c2_c*g1_cxminus1 + c2_c*(m) + (1-delta)*gamma*Dtminus1 - zl)/(zh - zl)
+      g1_c_expectation = cons*g1_cxtminus1
+      g1_Id_expectation = cons*g1_Idxtminus1
+      g1_pd_expectation = cons*g1_pdxtminus1
 
+
+
+      #g1_cxminus1 = g1_c_y*cons*y_ss + g1_c_pi*cons*pi_ss + g1_c_Id*cons*Idss + g1_c_D*cons*D_ss
+
+    # c = (c1_Id*(g1_Id_expectation) + c2_c*g1_c_expectation + c2_c*m_c + c1_Id*m_Id + (1-delta)*gamma*Dtminus1 - zl)/(zh - zl)
+      c = (g1_pd_expectation +  m_pd +  (1-delta)*gamma*Dtminus1 - zl)/(zh - zl)
 
       #c = (c1tild*(t) + c2*gc_css + atild*(m) - r)/(zh - zl)
 
