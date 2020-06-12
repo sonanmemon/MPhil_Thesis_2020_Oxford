@@ -123,6 +123,20 @@ dat$predicted <- coeff1*dat$Congpres + coeff2*dat$INCOME + coeff3*dat$EDUC
 + coeff4*dat$INVEST + coeff5*dat$YGAP
 
 
+plot(dat$predicted)
+
+dat
+
+
+
+
+
+
+
+
+
+
+
 
 
 results_panel_nl <- lp_nl_panel(data_set = dat,
